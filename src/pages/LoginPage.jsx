@@ -11,18 +11,24 @@ import Button from '@mui/material/Button';
 const LoginPage = () => {
   const { isAuth, authenticate } = useAuth();
 
+  const [error, setError] = useState('');
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(credentials);
-    authenticate(credentials.email, credentials.password);
+    try {
+      await authenticate(credentials.email, credentials.password);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const handleInputChange = (e) => {
+    setError('');
     console.log(credentials);
     const target = e.target;
     const value = target.value;
@@ -74,6 +80,7 @@ const LoginPage = () => {
         <Typography variant="body2">
           Olvidate tu contraseña o tu usuario? Contactanos
         </Typography>
+        {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
         <Button type="button" variant="contained" color="success">
           Contactanos
         </Button>
