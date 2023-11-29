@@ -16,13 +16,17 @@ const _isLogin = (email, password) => {
       email: 'zxc@zxc.com',
       password: '1abc',
     },
+    {
+      email: 'admin@email.com',
+      password: 'admin',
+    },
   ];
   const userEmails = VALID_USERS.map((user) => user.email);
   if (userEmails.includes(email)) {
-    const foundUser = VALID_USERS.filter((user) => user.email === email);
+    const foundUser = VALID_USERS.filter((user) => user.email === email)[0];
     return foundUser.password === password;
   }
-  return false;
+  throw new Error('Usuario o contraseña incorrectos');
 };
 
 const AuthContextProvider = ({ children }) => {
@@ -30,6 +34,7 @@ const AuthContextProvider = ({ children }) => {
 
   const authenticate = (user, password) => {
     const isLoggedIn = _isLogin(user, password);
+    console.log(isLoggedIn, user, password);
     setIsAuth(isLoggedIn);
   };
 
@@ -43,9 +48,7 @@ const AuthContextProvider = ({ children }) => {
     logout,
   };
 
-  return (
-    <AuthContext.Provider value={values}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 };
 
 export { AuthContext, AuthContextProvider };
